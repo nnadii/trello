@@ -1,43 +1,37 @@
-import { useState } from "react";
+import { useState } from "react"
 import { useTypedDispatch, useTypedSelector } from "../hooks/reduxHooks";
-import {
-  appContainer,
-  board,
-  buttons,
-  deleteBoardButton,
-  loggerButton,
-} from "./App.css";
-import BoardList from "./BoardList/BoardList";
-import ListsContainer from "./ListsContainer/ListsContainer";
-import { DragDropContext } from "react-beautiful-dnd";
-import { deleteBoard, sort } from "../redux/slices/boardsSlice";
-import ModalEdit from "./ModalEdit/ModalEdit";
-import { addLog } from "../redux/slices/loggerSlice";
-import { v4 } from "uuid";
-import LogggerModal from "./LogggerModal/LogggerModal";
+import { appContainer, board, buttons, deleteBoardButton, loggerButton } from "./App.css"
+import BoardList from "./BoardList/BoardList"
+import ListsContainer from "./ListsContainer/ListsContainer"
+import { DragDropContext } from "react-beautiful-dnd"
+import { deleteBoard, sort } from "../redux/slices/boardsSlice"
+import ModalEdit from "./ModalEdit/ModalEdit"
+import { addLog } from "../redux/slices/loggerSlice"
+import { v4 } from "uuid"
+import LogggerModal from "./LogggerModal/LogggerModal"
 
 const App = () => {
-  const dispatch = useTypedDispatch();
-  const [activeBoardId, setActiveBoardId] = useState("board-0");
-  const [loggerOpen, setLoggerOpen] = useState(true);
-  const modalActive = useTypedSelector(state => state.boards.modalActive);
-  const boards = useTypedSelector(state => state.boards.boardArray);
+  const dispatch = useTypedDispatch()
+  const [activeBoardId, setActiveBoardId] = useState("board-0")
+  const [loggerOpen, setLoggerOpen] = useState(true)
+  const modalActive = useTypedSelector(state => state.boards.modalActive)
+  const boards = useTypedSelector(state => state.boards.boardArray)
 
   const getActiveBoard = boards.filter(
     board => board.boardId === activeBoardId
-  )[0];
+  )[0]
 
-  const lists = getActiveBoard.lists;
+  const lists = getActiveBoard.lists
 
   const onDragEnd = (result: any) => {
-    const { destination, source, draggableId } = result;
+    const { destination, source, draggableId } = result
 
     const sourceList = lists.filter(
       list => list.listId === source.droppableId
-    )[0];
+    )[0]
 
     if (!destination) {
-      return;
+      return
     }
 
     dispatch(
@@ -49,7 +43,7 @@ const App = () => {
         droppableIndexEnd: destination.index,
         draggableId,
       })
-    );
+    )
 
     dispatch(
       addLog({
@@ -64,12 +58,12 @@ const App = () => {
         logAuthor: "User",
         logTimestamp: String(Date.now()),
       })
-    );
-  };
+    )
+  }
 
   const handleDeleteBoard = () => {
     if (boards.length > 1) {
-      dispatch(deleteBoard({ boardId: getActiveBoard.boardId }));
+      dispatch(deleteBoard({ boardId: getActiveBoard.boardId }))
 
       dispatch(
         addLog({
@@ -78,26 +72,26 @@ const App = () => {
           logAuthor: "User",
           logTimestamp: String(Date.now()),
         })
-      );
+      )
 
       const newIndexToSet = () => {
         const indexToBeDeleted = boards.findIndex(
           board => board.boardId === activeBoardId
-        );
+        )
         return indexToBeDeleted === 0
           ? indexToBeDeleted + 1
-          : indexToBeDeleted - 1;
-      };
+          : indexToBeDeleted - 1
+      }
 
-      setActiveBoardId(boards[newIndexToSet()].boardId);
+      setActiveBoardId(boards[newIndexToSet()].boardId)
     } else {
-      alert("Minimum board amount is 1");
+      alert("Minimum board amount is 1")
     }
-  };
+  }
 
   const handleOpenLogger = () => {
-    setLoggerOpen(!loggerOpen);
-  };
+    setLoggerOpen(!loggerOpen)
+  }
 
   return (
     <div className={appContainer}>
@@ -121,7 +115,7 @@ const App = () => {
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App
